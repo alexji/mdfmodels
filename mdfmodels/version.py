@@ -57,6 +57,6 @@ MINOR = _version_minor
 MICRO = _version_micro
 VERSION = __version__
 PACKAGE_DATA = {'mdfmodels': [pjoin('data', '*')]}
-REQUIRES = ["numpy","scipy"]
+REQUIRES = ["numpy","scipy","dynesty","schwimmbad"]
 PYTHON_REQUIRES = ">= 3.5"
 
