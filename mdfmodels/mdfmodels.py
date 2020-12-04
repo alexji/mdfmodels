@@ -1,7 +1,14 @@
 import numpy as np
 from scipy import special, interpolate, integrate, optimize
+from scipy.ndimage import gaussian_filter
 import warnings
 
+def convolve_pdf(feh, pdf, sigma):
+    dfeh = feh[1]-feh[0]
+    assert np.all(np.diff(feh) == dfeh)
+    sigma_pix = sigma/dfeh
+    return gaussian_filter(pdf, sigma_pix, mode="nearest")
+    
 def leaky_box(feh, p):
     """
     p = p_eff
