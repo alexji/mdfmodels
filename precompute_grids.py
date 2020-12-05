@@ -37,7 +37,8 @@ if __name__=="__main__":
     np.save("leaky_box_pdfs.npy",leaky_box_pdfs)
     np.save("leaky_box_other.npy",[grid_logp, grid_sigma, feh])
     
-#def run_pre_enriched_box():
+def run_pre_enriched_box():
+#if __name__=="__main__":
     print("Running pre-enriched box")
     start = time.time()
     pre_enriched_box_pdfs = np.zeros((grid_logp.size, grid_feh0.size, grid_sigma.size, feh.size))
@@ -55,11 +56,11 @@ if __name__=="__main__":
     np.save("pre_enriched_box_other.npy",[grid_logp, grid_feh0, grid_sigma, feh])
     print(f"\nPre enriched box took {time.time()-start:.1f}s")
     
-#def run_extra_gas():
-if __name__=="__main__":
+def run_extra_gas():
+#if __name__=="__main__":
     print("Running extra gas")
     start = time.time()
-    extra_gas_pdfs = np.zeros((grid_logp.size, grid_feh0.size, grid_sigma.size, feh.size))
+    extra_gas_pdfs = np.zeros((grid_logp.size, grid_M.size, grid_sigma.size, feh.size))
     with MultiPool(nproc) as pool:
         for i,logp in enumerate(grid_logp):
             for j,M in enumerate(grid_M):
