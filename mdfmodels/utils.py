@@ -7,9 +7,14 @@ from . import mdfmodels
 
 import dynesty.plotting as dyplot
 
-def resample(dsampler):
-    res = dsampler.results
-    dyplot.resample
+def resample_unweighted(dsampler):
+    """ Takes a DynestNestedSampler and returns unweighted samples """
+    results = dsampler.results
+    try:
+        weights = np.exp(results['logwt'] - results['logz'][-1])
+    except:
+        weights = results['weights']
+    return dyplot.resample_equal(results["samples"], weights)
 
 def _sampler(N, invcdf):
     """ Function template for making random samplers """
