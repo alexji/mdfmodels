@@ -3,7 +3,7 @@ from scipy import interpolate
 from scipy.ndimage import gaussian_filter
 import functools
 
-from . import mdfmodels
+from . import mdfmodels, fast_mdfmodels
 
 import dynesty as dy
 from dynesty import plotting as dyplot
@@ -67,3 +67,43 @@ def fit_extra_gas(fehdata,
     dsampler = dy.DynamicNestedSampler(lnlkhd, ptform, ndim=2, pool=pool)
     dsampler.run_nested(**run_nested_kwargs)
     return dsampler
+
+def fit_leaky_box_errors(fehdata, efehdata,
+                         logpmin=-3, logpmax=-1,
+                         pool=None, ptform=None, **run_nested_kwargs):
+    griddata = fast_mdfmodels.load_data("leaky_box")
+    lnlkhd = functools.partial(fast_mdfmodels.fast_loglkhd_leaky_box,
+                               fehdata=fehdata, efehdata=efehdata,
+                               griddata=griddata)
+    if ptform is None:
+        ptform = functools.partial(ptform_leaky_box, logpmin=logpmin, logpmax=logpmax)
+    dsampler = dy.DynamicNestedSampler(lnlkhd, ptform, ndim=1, pool=pool)
+    dsampler.run_nested(**run_nested_kwargs)
+    return dsampler
+def fit_pre_enriched_box_errors(fehdata, efehdata,
+                                logpmin=-3, logpmax=-1,
+                                feh0min=-5, feh0max=-2,
+                                pool=None, ptform=None, **run_nested_kwargs):
+    griddata = fast_mdfmodels.load_data("pre_enriched_box")
+    lnlkhd = functools.partial(fast_mdfmodels.fast_loglkhd_pre_enriched_box,
+                               fehdata=fehdata, efehdata=efehdata,
+                               griddata=griddata)
+    if ptform is None:
+        ptform = functools.partial(ptform_pre_enriched_box, logpmin=logpmin, logpmax=logpmax, feh0min=feh0min, feh0max=feh0max)
+    dsampler = dy.DynamicNestedSampler(lnlkhd, ptform, ndim=2, pool=pool)
+    dsampler.run_nested(**run_nested_kwargs)
+    return dsampler
+def fit_extra_gas_errors(fehdata, efehdata,
+                         logpmin=-3, logpmax=-1,
+                         Mmin=1, Mmax=10,
+                         pool=None, ptform=None, **run_nested_kwargs):
+    griddata = fast_mdfmodels.load_data("extra_gas")
+    lnlkhd = functools.partial(fast_mdfmodels.fast_loglkhd_extra_gas,
+                               fehdata=fehdata, efehdata=efehdata,
+                               griddata=griddata)
+    if ptform is None:
+        ptform = functools.partial(ptform_extra_gas, logpmin=logpmin, logpmax=logpmax, Mmin=Mmin, Mmax=Mmax)
+    dsampler = dy.DynamicNestedSampler(lnlkhd, ptform, ndim=2, pool=pool)
+    dsampler.run_nested(**run_nested_kwargs)
+    return dsampler
+
