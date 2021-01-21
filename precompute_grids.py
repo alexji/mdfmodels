@@ -7,7 +7,7 @@ import functools
 
 grid_logp = np.arange(-4,0.01,0.025)
 grid_feh0 = np.arange(-4,0.01,0.025)
-grid_M    = np.arange(1,15.1,0.2)
+grid_M    = np.arange(1,30.1,0.2)
 grid_sigma = np.arange(0.00,0.51,0.025)
 feh = np.arange(-5,1,0.005)
 
@@ -21,7 +21,7 @@ if __name__=="__main__":
     print(f"M: {grid_M.size}")
     print(f"sigma: {grid_sigma.size}")
     
-#def run_leaky_box():
+def run_leaky_box():
     print("Running leaky box")
     start = time.time()
     leaky_box_pdfs = np.zeros((grid_logp.size, grid_sigma.size, feh.size))
@@ -56,8 +56,8 @@ def run_pre_enriched_box():
     np.save("pre_enriched_box_other.npy",[grid_logp, grid_feh0, grid_sigma, feh])
     print(f"\nPre enriched box took {time.time()-start:.1f}s")
     
-def run_extra_gas():
-#if __name__=="__main__":
+#def run_extra_gas():
+if __name__=="__main__":
     print("Running extra gas")
     start = time.time()
     extra_gas_pdfs = np.zeros((grid_logp.size, grid_M.size, grid_sigma.size, feh.size))

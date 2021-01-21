@@ -1,5 +1,5 @@
 import numpy as np
-from scipy import special, interpolate, integrate, optimize
+from scipy import special, interpolate, integrate, optimize, stats
 from scipy.ndimage import gaussian_filter
 import warnings
 
@@ -31,6 +31,11 @@ def pre_enriched_box(feh, p, feh0):
     out = np.log(10) * (z-z0) * np.exp(-z) / (np.exp(-z0) - z0 * (-special.expi(-z0)))
     out[feh <= feh0] = 0.
     return out
+
+def gaussian(feh, mu, sigma):
+    return stats.norm.pdf(feh, loc=mu, scale=sigma)
+def log_gaussian(feh, mu, sigma):
+    return stats.norm.logpdf(feh, loc=mu, scale=sigma)
 
 def log_pre_enriched_box(feh, p, feh0):
     z = 10**feh/p 

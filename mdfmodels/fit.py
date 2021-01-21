@@ -107,3 +107,19 @@ def fit_extra_gas_errors(fehdata, efehdata,
     dsampler.run_nested(**run_nested_kwargs)
     return dsampler
 
+def ptform_gaussian(u, mumin, mumax, logsigmamin, logsigmamax):
+    u[0] = (mumax-mumin)*u[0] + mumin
+    u[1] = 10**((logsigmamax-logsigmamin)*u[1] + logsigmamin)
+    return u
+def fit_gaussian_errors(fehdata, efehdata,
+                        mumin = -4, mumax = -1,
+                        logsigmamin=-2, logsigmamax=1,
+                        pool=None, ptform=None, **run_nested_kwargs):
+    lnlkhd = functools.partial(fast_mdfmodels.fast_loglkhd_gaussian,
+                               fehdata=fehdata, efehdata=efehdata)
+    if ptform is None:
+        ptform = functools.partial(ptform_gaussian, mumin=mumin, mumax=mumax,
+                                   logsigmamin=logsigmamin, logsigmamax=logsigmamax)
+    dsampler = dy.DynamicNestedSampler(lnlkhd, ptform, ndim=2, pool=pool)
+    dsampler.run_nested(**run_nested_kwargs)
+    return dsampler

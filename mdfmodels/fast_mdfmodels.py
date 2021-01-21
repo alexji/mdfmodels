@@ -1,9 +1,14 @@
 import numpy as np
-from scipy import interpolate
+from scipy import interpolate, stats
 import time
+
+from . import mdfmodels
 
 import os
 datapath = os.path.join(os.path.dirname(__file__),"data")
+
+default_feh = np.arange(-5,1,0.005)
+
 
 def load_data(name, minlogpdf=-999):
     assert name in ["leaky_box","pre_enriched_box","extra_gas"]
@@ -71,3 +76,11 @@ def fast_pdf_extra_gas(p, M, sigma, griddata):
     feh = inputs[-1]
     lnpdf = interpolate.interpn(inputs[:-1], lnpdfs, [logp,M,sigma], bounds_error=False, fill_value=-999)
     return feh, np.exp(lnpdf[0])
+
+def fast_loglkhd_gaussian(theta, fehdata, efehdata, griddata=None):
+    mu, sigma = theta
+    scales = np.sqrt(sigma**2 + efehdata**2)
+    logpdfs = stats.norm.logpdf(fehdata, loc=mu, scale=scales)
+    return np.sum(logpdfs)
+def fast_pdf_gaussian(mu, sigma, griddata=None):
+    return default_feh, mdfmodels.gaussian(default_feh, mu, sigma)

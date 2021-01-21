@@ -9,7 +9,11 @@ import dynesty.plotting as dyplot
 
 def resample_unweighted(dsampler):
     """ Takes a DynestNestedSampler and returns unweighted samples """
-    results = dsampler.results
+    try:
+        results = dsampler.results
+    except:
+        results = dsampler
+    
     try:
         weights = np.exp(results['logwt'] - results['logz'][-1])
     except:
